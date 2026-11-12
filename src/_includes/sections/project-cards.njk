@@ -1,0 +1,22 @@
+{#- A row of project cards: featured, newest, or hand-picked. -#}
+{%- set picked = collections.projects | pickProjects(section) %}
+{%- if picked.length %}
+<section class="projects-section">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                {%- if section.label %}<span class="section-label">{{ section.label | upper }}</span>{% endif %}
+                <h2>{{ section.title }}</h2>
+            </div>
+            {%- if section.all_link %}
+            <a href="{{ section.all_link.url }}" class="all-projects">{{ section.all_link.label }} <span aria-hidden="true">→</span></a>
+            {%- endif %}
+        </div>
+        <div class="card-grid">
+            {%- asyncEach p in picked %}
+            {% include "components/project-card.njk" %}
+            {%- endeach %}
+        </div>
+    </div>
+</section>
+{%- endif %}

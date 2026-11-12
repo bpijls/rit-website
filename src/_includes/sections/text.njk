@@ -1,0 +1,6 @@
+<section class="about-content">
+    <div class="container content-narrow prose">
+        {%- if section.title %}<h2>{{ section.title }}</h2>{% endif %}
+        {{ section.body | md | safe }}
+    </div>
+</section>

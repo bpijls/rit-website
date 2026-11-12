@@ -1,0 +1,21 @@
+{%- set items = (collections.people | bySlug(section.people)) if section.people and section.people.length else collections.people %}
+<section class="projects-section people-grid">
+    <div class="container">
+        <div class="section-header"><div><h2>{{ section.title }}</h2></div></div>
+        <ul class="person-cards">
+            {%- for person in items %}
+            <li>
+                <a href="{{ person.url }}" class="person-card">
+                    {%- if person.data.photo %}
+                    <img src="{{ person.data.photo | asset(person.inputPath) }}" alt="" sizes="12rem">
+                    {%- else %}
+                    <span class="person-initials" aria-hidden="true">{{ person.data.name | initials }}</span>
+                    {%- endif %}
+                    <span class="person-name">{{ person.data.name }}</span>
+                    <span class="person-role">{{ person.data.role }}</span>
+                </a>
+            </li>
+            {%- endfor %}
+        </ul>
+    </div>
+</section>

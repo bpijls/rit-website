@@ -1,0 +1,36 @@
+{% extends "layouts/base.njk" %}
+{#- News items and agenda items: banner with title card, then the text. -#}
+{% block main %}
+{%- set sk = { data: { sketch: sketch }, inputPath: page.inputPath } | sketchFor(site.default_sketch) %}
+<section class="p5-hero about-hero">
+    <div class="hero-image hero-sketch">{% sketchImage sk, { eager: true } %}</div>
+    {% include "components/sketch-download.njk" %}
+    <div class="hero-card">
+        <p class="hero-kicker">
+            {%- if kind == "news" %}Nieuws · <time datetime="{{ date | isoDate }}">{{ date | date }}</time>
+            {%- else %}Agenda · <time datetime="{{ start | isoDate }}">{{ start | date }}</time>{% endif -%}
+        </p>
+        <h1>{{ title }}</h1>
+        <p>{{ summary }}</p>
+    </div>
+</section>
+
+<section class="about-content">
+    <div class="container content-narrow prose">
+        {%- if kind == "event" %}
+        <dl class="event-facts">
+            <div><dt>Wanneer</dt><dd>{{ start | date }}, {{ start | time }}{% if end %}–{{ end | time }}{% endif %}</dd></div>
+            <div><dt>Waar</dt><dd>{{ location }}</dd></div>
+        </dl>
+        {%- endif %}
+        {%- if image %}
+        <img class="article-image" src="{{ image | asset(page.inputPath) }}" alt="{{ image_alt }}" sizes="(max-width: 900px) 100vw, 50rem">
+        {%- endif %}
+        {{ content | safe }}
+        {%- if kind == "event" and registration and registration.url %}
+        <p><a href="{{ registration.url }}" class="btn btn-primary">{{ registration.label }}</a></p>
+        {%- endif %}
+        <p><a class="read-more" href="{{ '/nieuws/' if kind == 'news' else '/agenda/' }}"><span aria-hidden="true">←</span> {{ 'Al het nieuws' if kind == 'news' else 'Hele agenda' }}</a></p>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+{%- set items = collections.news | head(section.limit or 3) %}
+<section class="projects-section news-list">
+    <div class="container">
+        <div class="section-header">
+            <div><h2>{{ section.title }}</h2></div>
+            {%- if section.all_link %}
+            <a href="{{ section.all_link.url }}" class="all-projects">{{ section.all_link.label }} <span aria-hidden="true">→</span></a>
+            {%- endif %}
+        </div>
+        {%- if items.length %}
+        <div class="card-grid">
+            {%- asyncEach item in items %}
+            <a href="{{ item.url }}" class="project-card">
+                <div class="card-image">
+                    {%- if item.data.image %}
+                    <img src="{{ item.data.image | asset(item.inputPath) }}" alt="" sizes="(max-width: 700px) 100vw, 33vw">
+                    {%- else %}
+                    {%- set newsSketch = item | sketchFor(site.default_sketch) %}
+                    {% sketchImage newsSketch, { decorative: true, widths: [480, 960], sizes: "(max-width: 700px) 100vw, 33vw" } %}
+                    {%- endif %}
+                </div>
+                <div class="card-content">
+                    <p class="card-date"><time datetime="{{ item.data.date | isoDate }}">{{ item.data.date | date }}</time></p>
+                    <h3>{{ item.data.title }}</h3>
+                    <p>{{ item.data.summary }}</p>
+                    <span class="read-more-card">Lees meer <span aria-hidden="true">→</span></span>
+                </div>
+            </a>
+            {%- endeach %}
+        </div>
+        {%- else %}
+        <p class="empty-state">Er is nog geen nieuws.</p>
+        {%- endif %}
+    </div>
+</section>

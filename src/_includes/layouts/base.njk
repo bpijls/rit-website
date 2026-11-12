@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="{{ lang or 'nl' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {%- set pageTitle = (title or name) %}
+    <title>{% if pageTitle and pageTitle != site.title %}{{ pageTitle }} — {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{{ description or summary or site.description }}">
+    <meta property="og:title" content="{{ pageTitle or site.title }}">
+    <meta property="og:description" content="{{ description or summary or site.description }}">
+    <link rel="preload" href="/assets/css/font/AtkinsonHyperlegibleNextVF-Variable.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/project-detail.css">
+    <link rel="stylesheet" href="/assets/css/site.css">
+    <link rel="icon" type="image/png" href="/assets/img/fav-icon.png">
+    <script src="/assets/js/site.js" defer></script>
+</head>
+<body class="kind-{{ kind }}">
+
+    <a href="#main-content" class="skip-link">Direct naar inhoud</a>
+
+    <div class="overlay" id="overlay"></div>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="/" class="logo">
+                <img src="/assets/img/hva-logo.png" alt="Responsible IT — naar de homepage" eleventy:ignore>
+            </a>
+
+            <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="main-nav" aria-label="Hoofdnavigatie">
+                <ul>
+                    {%- for item in site.nav %}
+                    <li><a href="{{ item.url }}"{% if page.url == item.url or (item.url != '/' and page.url.startsWith(item.url)) %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+                    {%- endfor %}
+                </ul>
+            </nav>
+
+            <button id="accessibilityToggle" class="accessibility-button"
+                aria-label="Open toegankelijkheidsinstellingen" aria-expanded="false">
+                Toegankelijkheid
+            </button>
+        </div>
+    </header>
+
+    <aside class="accessibility-panel" id="accessibilityPanel" aria-label="Toegankelijkheidsinstellingen">
+        <div class="panel-header">
+            <h2 class="visually-hidden">Toegankelijkheid</h2>
+            <button id="closeAccessibility" class="close-panel" aria-label="Sluit paneel">✕</button>
+        </div>
+        <div class="setting-group">
+            <h3>Lettergrootte</h3>
+            <button id="fontNormal" class="setting-btn">Normaal</button>
+            <button id="fontLarge" class="setting-btn">Groot</button>
+            <button id="fontXLarge" class="setting-btn">Extra groot</button>
+        </div>
+        <div class="setting-group">
+            <h3>Contrast</h3>
+            <button id="contrastToggle" class="setting-btn">Hoog contrast</button>
+        </div>
+        <div class="setting-group">
+            <h3>Animaties</h3>
+            <button id="motionToggle" class="setting-btn">Verminder animaties</button>
+        </div>
+    </aside>
+
+    <main id="main-content">
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            {%- if site.footer_links %}
+            <div class="footer-links">
+                {%- for link in site.footer_links %}
+                <a href="{{ link.url }}">{{ link.label }}</a>
+                {%- endfor %}
+            </div>
+            {%- endif %}
+            <p>{{ site.copyright }}</p>
+        </div>
+    </footer>
+</body>
+</html>

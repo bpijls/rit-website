@@ -1,0 +1,16 @@
+{#- One project card (homepage style). Expects `p`: a project from collections.projects. -#}
+<a href="{{ p.url }}" class="project-card">
+    <div class="card-image">
+        {%- if p.data.card_image %}
+        <img src="{{ p.data.card_image | asset(p.inputPath) }}" alt="" sizes="(max-width: 700px) 100vw, 33vw">
+        {%- else %}
+        {%- set cardSketch = p | sketchFor(site.default_sketch) %}
+        {% sketchImage cardSketch, { decorative: true, widths: [480, 960], sizes: "(max-width: 700px) 100vw, 33vw" } %}
+        {%- endif %}
+    </div>
+    <div class="card-content">
+        <h3>{{ p.data.title }}</h3>
+        <p>{{ p.data.summary }}</p>
+        <span class="read-more-card">Lees meer <span aria-hidden="true">→</span></span>
+    </div>
+</a>

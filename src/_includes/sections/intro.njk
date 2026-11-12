@@ -1,0 +1,24 @@
+{#- Homepage intro: big title + text + buttons, with a short text and link on the right. -#}
+<section class="intro-section">
+    <div class="container intro-grid">
+        <div class="intro-content">
+            <h1>{{ section.title }}</h1>
+            <div class="prose">{{ section.body | md | safe }}</div>
+            {%- if section.buttons %}
+            <div class="button-group">
+                {%- for button in section.buttons %}
+                <a href="{{ button.url }}" class="btn btn-{{ button.style or 'primary' }}">{{ button.label }}</a>
+                {%- endfor %}
+            </div>
+            {%- endif %}
+        </div>
+        {%- if section.aside or section.aside_link %}
+        <div class="intro-side">
+            {%- if section.aside %}<p>{{ section.aside }}</p>{% endif %}
+            {%- if section.aside_link %}
+            <a href="{{ section.aside_link.url }}" class="read-more">{{ section.aside_link.label }} <span aria-hidden="true">→</span></a>
+            {%- endif %}
+        </div>
+        {%- endif %}
+    </div>
+</section>

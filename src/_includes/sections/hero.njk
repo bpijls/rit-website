@@ -1,0 +1,28 @@
+{#- Banner with a rendered p5 sketch. With a title it gets the brown card (over-RIT / over-p5 style). -#}
+{%- set sk = section | sketchFor(site.default_sketch) %}
+{%- if section.title %}
+<section class="p5-hero about-hero">
+    <div class="hero-image hero-sketch">
+        {% sketchImage sk, { eager: sectionIndex == 0 } %}
+    </div>
+    {%- if section.download != false %}{% include "components/sketch-download.njk" %}{% endif %}
+    <div class="hero-card">
+        <h1>{{ section.title }}</h1>
+        {%- if section.text %}<p>{{ section.text }}</p>{% endif %}
+        {%- if section.buttons %}
+        <div class="hero-buttons">
+            {%- for button in section.buttons %}
+            <a href="{{ button.url }}" class="btn btn-{{ button.style or 'primary' }}">{{ button.label }}</a>
+            {%- endfor %}
+        </div>
+        {%- endif %}
+    </div>
+</section>
+{%- else %}
+<section class="hero">
+    <div class="hero-image">
+        <div class="hero-sketch">{% sketchImage sk, { eager: sectionIndex == 0 } %}</div>
+        {%- if section.download != false %}{% include "components/sketch-download.njk" %}{% endif %}
+    </div>
+</section>
+{%- endif %}

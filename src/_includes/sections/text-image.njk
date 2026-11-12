@@ -1,0 +1,17 @@
+{#- Image left, text right (the 'lectorale rede' block on over-RIT). -#}
+<section class="lectorale-rede">
+    <div class="container content-narrow">
+        <div class="rede-content">
+            <div class="rede-image">
+                <img src="{{ section.image | asset(page.inputPath) }}" alt="{{ section.image_alt }}" sizes="(max-width: 700px) 100vw, 40vw">
+            </div>
+            <div class="rede-text">
+                <h2>{{ section.title }}</h2>
+                {{ section.body | md | safe }}
+                {%- if section.button and section.button.url %}
+                <a href="{{ section.button.url }}" class="btn btn-primary">{{ section.button.label }}</a>
+                {%- endif %}
+            </div>
+        </div>
+    </div>
+</section>

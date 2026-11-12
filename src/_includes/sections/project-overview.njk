@@ -1,0 +1,52 @@
+{#- All projects of a type, with the filters from template-overzichtpagina. Filtering/sorting is in site.js. -#}
+{%- set list = collections.projects | ofType(section.project_type) %}
+<section class="projects-section project-overview">
+    <div class="container">
+        <h2 class="visually-hidden">{{ section.title or title }}</h2>
+        {%- if section.filters != false %}
+        <form class="filters" aria-label="Projecten filteren en sorteren">
+            {%- set programmes = list | usedValues("programme") %}
+            {%- if programmes.length > 1 %}
+            <label>
+                <span class="visually-hidden">Opleiding</span>
+                <select name="opleiding">
+                    <option value="">Alle opleidingen</option>
+                    {%- for value in programmes %}
+                    <option value="{{ value }}">{{ value | label("programme") }}</option>
+                    {%- endfor %}
+                </select>
+            </label>
+            {%- endif %}
+            <label>
+                <span class="visually-hidden">Jaar</span>
+                <select name="jaar">
+                    <option value="">Alle jaren</option>
+                    {%- for year in list | yearOptions %}
+                    <option value="{{ year.value }}">{{ year.label }}</option>
+                    {%- endfor %}
+                </select>
+            </label>
+            <label>
+                <span class="visually-hidden">Sorteren</span>
+                <select name="sorteren">
+                    <option value="nieuwste">Nieuwste eerst</option>
+                    <option value="oudste">Oudste eerst</option>
+                    <option value="titel">A-Z</option>
+                </select>
+            </label>
+            <p class="project-count" role="status" aria-live="polite">{{ list.length }} {{ "project" if list.length == 1 else "projecten" }}</p>
+        </form>
+        <p class="no-results" hidden>Geen projecten gevonden met deze filters.</p>
+        {%- endif %}
+        {%- if not list.length %}
+        <p class="empty-state">Er zijn nog geen projecten.</p>
+        {%- endif %}
+        <ul class="card-grid project-grid" aria-label="Projectkaarten">
+            {%- asyncEach p in list %}
+            <li data-opleiding="{{ p.data.programme }}" data-jaar="{{ p.data.sortYear }}" data-title="{{ p.data.title }}">
+                {% include "components/project-card.njk" %}
+            </li>
+            {%- endeach %}
+        </ul>
+    </div>
+</section>

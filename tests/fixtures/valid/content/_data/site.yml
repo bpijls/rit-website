@@ -1,0 +1,7 @@
+title: Test
+description: Test
+default_sketch: simple
+nav:
+  - label: Home
+    url: /
+copyright: x

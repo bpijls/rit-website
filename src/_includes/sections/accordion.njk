@@ -1,0 +1,29 @@
+{#- Documentation: accordion with a timeline table of contents (the over-p5 'proces' block). Behaviour in site.js. -#}
+<section class="documentation">
+    <div class="container documentation-layout{% if section.toc == false %} documentation-layout--no-toc{% endif %}">
+        {%- if section.toc != false %}
+        <aside class="toc">
+            <h3>Inhoud</h3>
+            <ul>
+                {%- for item in section.items %}
+                <li class="timeline-item"><button type="button" class="toc-link">{{ item.title }}</button></li>
+                {%- endfor %}
+            </ul>
+        </aside>
+        {%- endif %}
+        <div class="accordion-wrapper">
+            {%- if section.title %}<h2>{{ section.title }}</h2>{% endif %}
+            <div class="accordion">
+                {%- for item in section.items %}
+                {%- set itemId = "acc-" + sectionIndex + "-" + loop.index %}
+                <div class="accordion-item">
+                    <button class="accordion-header" type="button" aria-expanded="false" aria-controls="{{ itemId }}">{{ item.title }}</button>
+                    <div class="accordion-content" id="{{ itemId }}">
+                        <div class="accordion-content-inner prose">{{ item.body | md | safe }}</div>
+                    </div>
+                </div>
+                {%- endfor %}
+            </div>
+        </div>
+    </div>
+</section>

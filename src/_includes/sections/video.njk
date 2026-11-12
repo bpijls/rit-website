@@ -1,0 +1,10 @@
+<section class="about-content video-section">
+    <div class="container content-narrow">
+        {%- if section.title %}<h2>{{ section.title }}</h2>{% endif %}
+        <div class="video-container">
+            <iframe src="{{ section.url | embedUrl }}" title="{{ section.video_title }}" loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+    </div>
+</section>

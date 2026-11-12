@@ -1,0 +1,4 @@
+{#- Every content file uses this layout (set globally in eleventy.config.js).
+    It picks the real layout from the entry's kind (see src/lib/content.js KINDS). -#}
+{%- set layoutFor = { page: "page", project: "project", news: "article", event: "article", person: "person" } -%}
+{%- extends "layouts/" + (layoutFor[kind] or "none") + ".njk" -%}

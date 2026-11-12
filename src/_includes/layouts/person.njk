@@ -1,0 +1,38 @@
+{% extends "layouts/base.njk" %}
+{% block main %}
+{%- set projectsOfPerson = collections.projects | withResearcher(slug) %}
+<section class="about-content person-page">
+    <div class="container content-narrow">
+        <div class="person-header">
+            {%- if photo %}
+            <img class="person-photo" src="{{ photo | asset(page.inputPath) }}" alt="{{ photo_alt or ('Foto van ' + name) }}" sizes="14rem">
+            {%- else %}
+            <span class="person-initials person-initials--large" aria-hidden="true">{{ name | initials }}</span>
+            {%- endif %}
+            <div>
+                <h1>{{ name }}</h1>
+                <p class="person-role">{{ role }}</p>
+                {%- if email %}<p><a href="mailto:{{ email }}">{{ email }}</a></p>{% endif %}
+                {%- if links %}
+                <ul class="person-links">
+                    {%- for link in links %}<li><a href="{{ link.url }}">{{ link.label }}</a></li>{% endfor %}
+                </ul>
+                {%- endif %}
+            </div>
+        </div>
+        <div class="prose">{{ content | safe }}</div>
+    </div>
+</section>
+{%- if projectsOfPerson.length %}
+<section class="projects-section">
+    <div class="container">
+        <div class="section-header"><div><h2>Projecten</h2></div></div>
+        <div class="card-grid">
+            {%- asyncEach p in projectsOfPerson %}
+            {% include "components/project-card.njk" %}
+            {%- endeach %}
+        </div>
+    </div>
+</section>
+{%- endif %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "layouts/base.njk" %}
+{% block main %}
+    {%- asyncEach section in sections %}
+        {%- set sectionIndex = loop.index0 if kind == "page" else 99 %}
+        {% include "sections/" + section.type + ".njk" %}
+    {%- endeach %}
+    {%- if content | trim %}
+    <section class="about-content">
+        <div class="container content-narrow prose">{{ content | safe }}</div>
+    </section>
+    {%- endif %}
+{% endblock %}

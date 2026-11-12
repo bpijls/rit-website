@@ -1,0 +1,27 @@
+{%- set items = collections.events | eventsWhen(section.when or "upcoming") | head(section.limit or 3) %}
+<section class="projects-section event-list">
+    <div class="container">
+        <div class="section-header">
+            <div><h2>{{ section.title }}</h2></div>
+            {%- if section.all_link %}
+            <a href="{{ section.all_link.url }}" class="all-projects">{{ section.all_link.label }} <span aria-hidden="true">→</span></a>
+            {%- endif %}
+        </div>
+        {%- if items.length %}
+        <ul class="event-items">
+            {%- for item in items %}
+            <li class="event-item">
+                <time class="event-date" datetime="{{ item.data.start | isoDate }}">{{ item.data.start | date }}</time>
+                <div>
+                    <h3><a href="{{ item.url }}">{{ item.data.title }}</a></h3>
+                    <p class="event-meta">{{ item.data.start | time }}{% if item.data.end %}–{{ item.data.end | time }}{% endif %} · {{ item.data.location }}</p>
+                    <p>{{ item.data.summary }}</p>
+                </div>
+            </li>
+            {%- endfor %}
+        </ul>
+        {%- else %}
+        <p class="empty-state">{{ "Er staan geen activiteiten gepland." if (section.when or "upcoming") == "upcoming" else "Nog geen activiteiten." }}</p>
+        {%- endif %}
+    </div>
+</section>

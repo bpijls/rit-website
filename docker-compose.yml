@@ -1,0 +1,37 @@
+# Local development: Eleventy dev server with live reload.
+# The image is the Playwright one, because rendering sketches needs Chromium.
+# Production is the nginx image from the Dockerfile, built by GitHub Actions and run by Coolify.
+services:
+  dev:
+    image: mcr.microsoft.com/playwright:v1.62.0-noble
+    working_dir: /app
+    user: "${UID:-1000}:${GID:-1000}"
+    command: sh -c "npm ci --no-audit --no-fund && npm run dev"
+    env_file: .env
+    environment:
+      ELEVENTY_ENV: development
+      HOME: /tmp
+    volumes:
+      - ./:/app
+    ports:
+      - "${HOST_PORT:-8080}:8080"
+
+  # One-off tasks: docker compose run --rm cli npm run build
+  cli:
+    image: mcr.microsoft.com/playwright:v1.62.0-noble
+    working_dir: /app
+    profiles: [tools]
+    user: "${UID:-1000}:${GID:-1000}"
+    env_file: .env
+    environment:
+      HOME: /tmp
+    volumes:
+      - ./:/app
+
+  # The production image, locally: docker compose --profile prod up -d --build site
+  site:
+    build: .
+    profiles: [prod]
+    restart: unless-stopped
+    ports:
+      - "${SITE_PORT:-8081}:80"

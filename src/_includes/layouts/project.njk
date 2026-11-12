@@ -1,0 +1,176 @@
+{% extends "layouts/base.njk" %}
+{% from "components/icons.njk" import icon %}
+{#- Project detail, from the designer's template-detailpagina (student-eliza.html / research-eliza.html).
+    Students: blue accent + facts row. Research: beige accent + scheme/researchers. -#}
+{% block main %}
+{%- set isStudent = type == "student" %}
+{%- set self = collections.projects | findSlug(slug) or { data: { sketch: sketch, sketch_file: sketch_file, sketch_alt: sketch_alt }, inputPath: page.inputPath } %}
+{%- set sk = self | sketchFor(site.default_sketch) %}
+{%- set partnerEntries = collections.partners | bySlug(partners) %}
+{%- set researcherEntries = collections.people | bySlug(researchers) %}
+<div class="project-detail project-detail--{{ 'blue' if isStudent else 'beige' }}">
+    <header class="project-detail__hero">
+        <section class="project-detail__hero-panel" aria-label="Project introductie">
+            <ul class="project-detail__meta-list" aria-label="Projectgegevens">
+                <li>{{ icon("calendar") }}<span>{{ school_year }}</span></li>
+                {%- if isStudent and student_count %}
+                <li>{{ icon("person") }}<span>{{ student_count }} <span class="visually-hidden">studenten</span></span></li>
+                {%- elif duration %}
+                <li>{{ icon("clock") }}<span>{{ duration }}</span></li>
+                {%- endif %}
+            </ul>
+            <h1>{{ title }}</h1>
+            <p class="project-detail__kicker">Responsible IT <span aria-hidden="true">•</span> {{ type | label("type") }}</p>
+        </section>
+
+        <figure class="project-detail__p5visual">
+            <span class="project-detail__sketch">{% sketchImage sk, { eager: true, sizes: "(max-width: 900px) 100vw, 60vw" } %}</span>
+            {%- set downloadClass = "project-detail__sketch-download" %}
+            {% include "components/sketch-download.njk" %}
+            <figcaption class="project-detail__visually-hidden">Generatieve projectvisualisatie</figcaption>
+        </figure>
+    </header>
+
+    <nav class="project-detail__back-nav" aria-label="Terug navigatie">
+        <a class="project-detail__back-link" href="{{ '/studentenprojecten/' if isStudent else '/onderzoeksprojecten/' }}">
+            {{ icon("back") }}<span>Alle {{ 'studentenprojecten' if isStudent else 'onderzoeksprojecten' }}</span>
+        </a>
+    </nav>
+
+    <section class="project-detail__section--intro">
+        <article class="project-detail__container project-detail__intro-grid{% if not isStudent %} project-detail__intro-grid--research{% endif %}">
+            <h2 class="project-detail__visually-hidden">Samenvatting van het project</h2>
+            <div class="project-detail__intro-content">
+                <p class="project-detail__intro-text">{{ summary }}</p>
+                {%- if cta and cta.url %}
+                <div class="button-group">
+                    <a href="{{ cta.url }}" class="btn btn-primary">{{ cta.label }}</a>
+                </div>
+                {%- endif %}
+            </div>
+
+            <dl class="project-detail__details-list">
+                {%- if isStudent and unit %}
+                <div><dt>Onderwijseenheid</dt><dd>{{ unit }}</dd></div>
+                {%- endif %}
+                {%- if not isStudent and scheme %}
+                <div><dt>Regeling</dt><dd>{{ scheme }}</dd></div>
+                {%- endif %}
+                {%- if partnerEntries.length or partner_names %}
+                <div>
+                    <dt>Partners</dt>
+                    <dd>
+                        {%- for partner in partnerEntries %}{% if partner.data.url %}<a href="{{ partner.data.url }}">{{ partner.data.name }}</a>{% else %}{{ partner.data.name }}{% endif %}<br>{% endfor %}
+                        {%- for name in partner_names %}{{ name }}<br>{% endfor %}
+                    </dd>
+                </div>
+                {%- endif %}
+                {%- if researcherEntries.length %}
+                <div>
+                    <dt>Onderzoekers</dt>
+                    <dd>
+                        {%- for person in researcherEntries %}<a href="{{ person.url }}">{{ person.data.name }}</a>{% if person.data.email %}<br><a href="mailto:{{ person.data.email }}">{{ person.data.email }}</a>{% endif %}<br>{% endfor %}
+                    </dd>
+                </div>
+                {%- endif %}
+            </dl>
+        </article>
+    </section>
+
+    {%- if isStudent and (programme or study_year or duration or level) %}
+    <section class="project-detail__section--facts">
+        <div class="project-detail__container">
+            <h2 class="project-detail__visually-hidden">Projectkenmerken</h2>
+            <ul class="project-detail__facts-list" aria-label="Projectkenmerken">
+                {%- if programme %}<li>{{ icon("cap") }}<span class="project-detail__fact-label">Opleiding</span><span class="project-detail__fact-value">{{ programme | label("programme") }}</span></li>{% endif %}
+                {%- if study_year %}<li>{{ icon("calendar") }}<span class="project-detail__fact-label">Jaar opleiding</span><span class="project-detail__fact-value">{{ study_year }}</span></li>{% endif %}
+                {%- if duration %}<li>{{ icon("calendar") }}<span class="project-detail__fact-label">Duur</span><span class="project-detail__fact-value">{{ duration }}</span></li>{% endif %}
+                {%- if level %}<li>{{ icon("cap") }}<span class="project-detail__fact-label">Niveau</span><span class="project-detail__fact-value">{{ level | label("level") }}</span></li>{% endif %}
+            </ul>
+        </div>
+    </section>
+    {%- endif %}
+
+    {%- if content | trim %}
+    <section class="project-detail__section--body">
+        <div class="project-detail__container prose">{{ content | safe }}</div>
+    </section>
+    {%- endif %}
+
+    {%- if video %}
+    <section class="project-detail__section--video">
+        <div class="project-detail__container">
+            <div class="video-container">
+                <iframe src="{{ video | embedUrl }}" title="Video: {{ title }}" loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+    {%- endif %}
+
+    {%- if gallery or sources %}
+    <section class="project-detail__section--gallery">
+        <div class="project-detail__container">
+            {%- if gallery %}
+            <h2 class="project-detail__visually-hidden">Projectbeelden</h2>
+            <ul class="project-detail__gallery-list" aria-label="Projectbeelden">
+                {%- for item in gallery %}
+                <li><img src="{{ item.image | asset(page.inputPath) }}" alt="{{ item.alt }}" sizes="(max-width: 700px) 100vw, 33vw"></li>
+                {%- endfor %}
+            </ul>
+            {%- endif %}
+            {%- if sources %}
+            <section class="project-detail__sources" aria-labelledby="project-detail-sources-title">
+                <h2 id="project-detail-sources-title" class="project-detail__visually-hidden">Bronnen</h2>
+                <ul class="project-detail__sources-list">
+                    {%- for source in sources %}
+                    <li><span class="project-detail__source-label">Bron</span><a href="{{ source.url }}">{{ source.label }}</a></li>
+                    {%- endfor %}
+                </ul>
+            </section>
+            {%- endif %}
+        </div>
+    </section>
+    {%- endif %}
+
+    {%- if sections %}
+    <div class="project-detail__sections">
+        {%- asyncEach section in sections %}
+            {%- set sectionIndex = 99 %}
+            {% include "sections/" + section.type + ".njk" %}
+        {%- endeach %}
+    </div>
+    {%- endif %}
+
+    {%- set related = collections.projects | relatedProjects(self) %}
+    {%- if related.length %}
+    <section class="project-detail__section--gerelateerd">
+        <div class="project-detail__container">
+            <h2 class="project-detail__related-title">Gerelateerde projecten</h2>
+            <ul class="project-detail__related-list">
+                {%- asyncEach p in related %}
+                <li>
+                    <article class="project-detail__related-card">
+                        <figure class="project-detail__related-card-media">
+                            {%- if p.data.card_image %}
+                            <img class="project-detail__related-card-image" src="{{ p.data.card_image | asset(p.inputPath) }}" alt="" sizes="(max-width: 700px) 100vw, 33vw">
+                            {%- else %}
+                            {%- set relSketch = p | sketchFor(site.default_sketch) %}
+                            {% sketchImage relSketch, { decorative: true, widths: [480, 960], sizes: "(max-width: 700px) 100vw, 33vw", class: "project-detail__related-card-image" } %}
+                            {%- endif %}
+                        </figure>
+                        <section class="project-detail__related-card-body">
+                            <h3>{{ p.data.title }}</h3>
+                            <p>{{ p.data.summary }}</p>
+                            <a href="{{ p.url }}">Lees meer<span class="visually-hidden"> over {{ p.data.title }}</span> <span aria-hidden="true">→</span></a>
+                        </section>
+                    </article>
+                </li>
+                {%- endeach %}
+            </ul>
+        </div>
+    </section>
+    {%- endif %}
+</div>
+{% endblock %}

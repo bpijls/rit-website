@@ -1,0 +1,21 @@
+{%- set items = (collections.partners | bySlug(section.partners)) if section.partners and section.partners.length else collections.partners %}
+{%- if items.length %}
+<section class="projects-section partner-logos">
+    <div class="container">
+        <div class="section-header"><div><h2>{{ section.title }}</h2></div></div>
+        <ul class="partner-items">
+            {%- for partner in items %}
+            <li>
+                {%- if partner.data.url %}<a href="{{ partner.data.url }}" class="partner-item">{% else %}<span class="partner-item">{% endif %}
+                {%- if partner.data.logo %}
+                <img src="{{ partner.data.logo | asset(partner.inputPath) }}" alt="{{ partner.data.name }}" sizes="12rem">
+                {%- else %}
+                <span class="partner-name">{{ partner.data.name }}</span>
+                {%- endif %}
+                {%- if partner.data.url %}</a>{% else %}</span>{% endif %}
+            </li>
+            {%- endfor %}
+        </ul>
+    </div>
+</section>
+{%- endif %}

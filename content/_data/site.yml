@@ -1,0 +1,22 @@
+title: Responsible IT
+description: Het lectoraat Responsible IT van de Hogeschool van Amsterdam onderzoekt hoe we digitale technologie verantwoord ontwerpen, ontwikkelen en gebruiken.
+default_sketch: 03-favoriet-50-variatie3
+nav:
+  - label: Studentenprojecten
+    url: /studentenprojecten/
+  - label: Onderzoeksprojecten
+    url: /onderzoeksprojecten/
+  - label: Nieuws
+    url: /nieuws/
+  - label: Agenda
+    url: /agenda/
+  - label: Over Responsible IT
+    url: /over-rit/
+footer_links:
+  - label: Mensen
+    url: /mensen/
+  - label: Partners
+    url: /partners/
+  - label: Contact
+    url: mailto:responsible-it@hva.nl
+copyright: © 2026 Lectoraat Responsible IT — Hogeschool van Amsterdam
