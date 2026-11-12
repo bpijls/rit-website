@@ -29,9 +29,21 @@ services:
       - ./:/app
 
   # The production image, locally: docker compose --profile prod up -d --build site
+  # Served through Caddy at https://${APP_DOMAIN}.
   site:
     build: .
     profiles: [prod]
     restart: unless-stopped
-    ports:
-      - "${SITE_PORT:-8081}:80"
+    networks: [caddy_proxy]
+    labels:
+      caddy: ${APP_DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 80}}"
+      caddy_docker_network: ${CADDY_NETWORK:-proxy}
+    # Local access without Caddy (http://localhost:${SITE_PORT}):
+    # ports:
+    #   - "${SITE_PORT:-8081}:80"
+
+networks:
+  caddy_proxy:
+    external: true
+    name: ${CADDY_NETWORK:-proxy}

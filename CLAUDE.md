@@ -25,13 +25,16 @@ docker compose up -d dev                  # Eleventy dev server with live reload
 docker compose logs -f dev
 docker compose run --rm cli npm run build # validate + render sketches + build into _site/
 docker compose run --rm cli npm run check # every internal link/image in _site/ exists
-docker compose --profile prod up -d --build site   # the production nginx image, from source
+docker compose --profile prod up -d --build site   # the production nginx image, from source,
+                                          # served by Caddy on this host at https://$APP_DOMAIN
 ```
 
 - The containers use the Playwright image (Chromium is needed to render sketches) and run as your UID.
   `node_modules/` lives in the project folder; the host Node is not used.
 - Drafts (`draft: true`) show in the dev server only.
-- `.env` only holds local ports (`HOST_PORT`, `SITE_PORT`). Production config lives in Coolify.
+- `.env` only holds local settings: ports (`HOST_PORT`, `SITE_PORT`) and the Caddy route for the local
+  prod image (`APP_DOMAIN=rit.paws.home`, `CADDY_NETWORK`). `site` has no host port by default.
+  Production config lives in Coolify.
 
 ## Tests
 
